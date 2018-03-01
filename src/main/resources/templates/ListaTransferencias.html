@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width" />
+
+<title>Lista de Transferências Financeiras</title>
+
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+	integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7"
+	crossorigin="anonymous" />
+
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link rel="stylesheet" href="/resources/demos/style.css">
+
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+<script th:src="@{/javascripts/jquery.mask.min.js}"></script>
+<script th:src="@{/javascripts/jquery.timepicker.min.js}"></script>
+<script th:src="@{/javascripts/jquery.maskMoney.min.js}"></script>
+
+<script type="text/javascript">
+
+	$(document).ready(function(){
+		$('#contaOrigem').mask('999999');
+		$('#contaDestino').mask('999999');
+		
+		$("#valorTransferencia").maskMoney({allowNegative: true, thousands:'', decimal:'.', affixesStay: false});
+		
+		$("#dataTransferencia").datepicker({
+	        dayNamesMin: ['D','S','T','Q','Q','S','S','D'],
+	        dayNamesShort: ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb','Dom'],
+	        dayNames: ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'],
+	        monthNamesShort: ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'],
+	        monthNames: ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'],
+	        dateFormat: 'dd/mm/yy',
+	        nextText: 'Próximo',
+	        prevText: 'Anterior'
+	    });
+	});
+
+
+	
+	
+	$( function() {
+
+	} );
+ 	
+	function validar(){
+		
+		var contaOrigem = $("#contaOrigem").val();
+		var contaDestino = $("#contaDestino").val();
+		var ok = true;
+		
+		if (contaOrigem == contaDestino){
+			alert("Conta Origem não pode ser mesma que Destino!")
+			ok = false;
+		} 
+
+		var valorTransferencia = $("#valorTransferencia").val();
+		if (valorTransferencia <= 0){
+			alert("Valor deve ser maior que 0!")
+			ok = false;
+		}
+		
+		var dataTransferencia = $("#dataTransferencia").val();
+		var partesData = dataTransferencia.split("/");
+		var data = new Date(dataTransferencia[2], dataTransferencia[1] - 1, dataTransferencia[0]);
+		if(data < new Date()){
+		   alert("Data de Transferencia deve ser maior que hoje!");
+		   ok = false;
+		}
+		alert(ok);
+		if (ok){
+			alert("entrou aqui");
+			document.formTransf.submit();	
+		}
+	}
+	
+	
+</script>
+
+</head>
+
+<body>
+	<div class="panel panel-default" style="margin: 10px">
+		<div class="panel-heading">
+			<h1 class="panel-title">Lista de Transferências Financeiras</h1>
+		</div>
+		<div class="panel-body">
+
+			<form class="form-horizontal" method="POST" th:object="${transferencia}"
+				th:action="@{/transferencias}" style="margin: 20px 0" name="formTransf" id="formTransf">
+
+				<div class="form-group">
+					<label for="contaOrigem">Conta de Origem:</label>
+					<input type="text" class="form-control"
+						placeholder="Conta de Origem" id="contaOrigem" name="contaOrigem"
+						th:field="*{contaOrigem}">
+				</div>
+				<div class="form-group">
+					<label for="contaDestino">Conta de Destino:</label>
+					<input type="text" class="form-control"
+						placeholder="Conta de Destino" id="contaDestino"
+						name="contaDestino" th:field="*{contaDestino}">
+				</div>
+				
+				<div class="form-group">
+					<label for="valorTransferencia">Valor R$:</label>
+					<input type="text" class="form-control"
+						placeholder="Valor da Transferencia" id="valorTransferencia"
+						name="valorTransferencia" th:field="*{valorTransferencia}">
+				</div>
+				
+				<div class="form-group">
+					<label for="dataTransferencia">Data:</label>
+					<input type="text" class="form-control"
+						placeholder="Data da Transferencia" id="dataTransferencia"
+						name="dataTransferencia" th:field="*{dataTransferencia}">
+				</div>
+				
+				<div class="form-group">
+					<button type="submit" class="btn btn-primary" onclick="validar()">Agendar Transferência</button>
+				</div>
+			</form>
+
+
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Conta Origem</th>
+						<th>Conta Destino</th>
+						<th>Valor de Transferência</th>
+						<th>Taxa de Transferência</th>
+						<th>Data de Transferência</th>
+						<th>Data de Agendamento</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="transferencia : ${transferencias}">
+						<td th:text="${transferencia.contaOrigem}"></td>
+						<td th:text="${transferencia.contaDestino}"></td>
+						<td th:text="${transferencia.valorTransferencia}"></td>
+						<td th:text="${transferencia.taxa}"></td>
+						<td th:text="${transferencia.dataTransferencia}"></td>
+						<td th:text="${transferencia.dataAgendamento}"></td>
+					</tr>
+				</tbody>
+			</table>
+
+
+
+
+
+
+
+		</div>
+	</div>
+</body>
+
+</html>
