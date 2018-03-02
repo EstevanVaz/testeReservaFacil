@@ -1,7 +1,7 @@
 # testeReservaFacil
 Prova teste Reserva Fácil - Aéreo
 
-http://localhost:8080/transferencias
+http://localhost:8080/ProvaReservaFacil/transferencias
 
 Utilizado:
 Java 8 -
