@@ -4,9 +4,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class TesteReservaFacilApplication {
+public class ProvaReservaFacilApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(TesteReservaFacilApplication.class, args);
+		SpringApplication.run(ProvaReservaFacilApplication.class, args);
 	}
 }
